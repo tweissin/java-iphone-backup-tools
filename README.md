@@ -29,3 +29,13 @@ Listing all backups
 ```
 %JAVA_HOME%\bin\java -jar target\backup-helper.jar -c list-backups
 ```
+
+List recordings
+```
+%JAVA_HOME%\bin\java -jar target\backup-helper.jar -c list-recordings -b 000e903852948d1b9729e79c039fc3f14941535b-20180801-210921
+```
+
+Download all recordings
+```
+%JAVA_HOME%\bin\java -jar target\backup-helper.jar -c download-recordings -o c:\temp -b 000e903852948d1b9729e79c039fc3f14941535b-20180801-210921
+```
