@@ -5,8 +5,10 @@ import com.dd.plist.NSDictionary;
 import com.dd.plist.NSObject;
 import com.dd.plist.NSString;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.TreeMap;
 
 public class DumpPlist {
     public static void dump(NSDictionary dictionary) {
@@ -19,13 +21,16 @@ public class DumpPlist {
                 dumpArray(k, (NSArray) v, " ");
             }
             if (v instanceof NSDictionary) {
-                System.out.println(" " + k + " dictionary");
+                System.out.println(" " + k + " [dictionary]");
                 NSDictionary dict = (NSDictionary)v;
-                TreeMap<String,NSObject> tmap = new TreeMap<>();
-                dict.forEach(tmap::put);
-                tmap.forEach((sk,sv) -> {
+                TreeMap<String,NSObject> map = new TreeMap<>();
+                // put it into a new map so keys are sorted
+                dict.forEach(map::put);
+                map.forEach((sk,sv) -> {
                     if (sv instanceof NSArray) {
                         dumpArray(sk, (NSArray) sv, "  -> ");
+                    } else if (sv instanceof NSDictionary) {
+                        System.out.println("  -> " + sk + " -> [dictionary]");
                     } else {
                         System.out.println("  -> " + sk + " -> " + sv.toString());
                     }
@@ -35,15 +40,12 @@ public class DumpPlist {
     }
 
     private static void dumpArray(String sk, NSArray sv, String s) {
-        System.out.println(s + sk + " array");
-        NSArray array = sv;
+        System.out.println(s + sk + " [array]");
         List<String> items = new ArrayList<>();
-        for (NSObject nsObject : array.getArray()) {
+        for (NSObject nsObject : sv.getArray()) {
             items.add(nsObject.toString());
         }
         Collections.sort(items);
-        items.forEach(item-> {
-            System.out.println("  -> " + item);
-        });
+        items.forEach(item-> System.out.println("  -> " + item));
     }
 }
