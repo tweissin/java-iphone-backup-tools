@@ -18,8 +18,14 @@ mvn clean install
 %JAVA_HOME%\bin\java -jar target\backup-helper.jar
 ```
 
-Example:
+Examples:
+
+Listing contents of a plist file
 ```
 %JAVA_HOME%\bin\java -jar target\backup-helper.jar -c plist -d "%APPDATA%\Apple Computer\MobileSync\Backup\BACKUP-ID" -f "Info.plist"
 ```
 
+Listing all backups
+```
+%JAVA_HOME%\bin\java -jar target\backup-helper.jar -c list-backups
+```

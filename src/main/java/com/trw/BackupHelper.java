@@ -12,13 +12,13 @@ import java.util.concurrent.Callable;
 @Command(name = "backup-helper", mixinStandardHelpOptions = true, version = "0.1",
         description = "iPhone backup helper.")
 public class BackupHelper implements Callable<Integer> {
-    @Option(names = {"-c"}, required = true, description = "Commands: plist")
+    @Option(names = {"-c"}, required = true, description = "Commands: plist list-backups")
     String command;
 
-    @Option(names = {"-d"}, required = true, description = "Directory")
+    @Option(names = {"-d"}, description = "Directory")
     File dir;
 
-    @Option(names = {"-f"}, required = true, description = "Filename")
+    @Option(names = {"-f"}, description = "Filename")
     String filename;
 
     public static void main(String[] args) {
@@ -28,10 +28,22 @@ public class BackupHelper implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        if (command.equals("plist")) {
-            var file = new File(dir, filename);
-            var rootDict = (NSDictionary) PropertyListParser.parse(file);
-            DumpPlist.dump(rootDict);
+        switch(command) {
+            case "plist":
+                if (dir==null || filename==null) {
+                    System.out.println("Both directory and filename are required");
+                    return 1;
+                }
+                var file = new File(dir, filename);
+                var rootDict = (NSDictionary) PropertyListParser.parse(file);
+                DumpPlist.dump(rootDict);
+                break;
+            case "list-backups":
+                if (dir==null) {
+                    dir = new File(System.getenv("APPDATA") + "\\Apple Computer\\MobileSync\\Backup");
+                }
+                ListBackups.doIt(dir);
+                break;
         }
         return 0;
     }
