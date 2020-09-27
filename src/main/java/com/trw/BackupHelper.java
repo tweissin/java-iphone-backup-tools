@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 @Command(name = "backup-helper", mixinStandardHelpOptions = true, version = "0.1",
         description = "iPhone backup helper.")
 public class BackupHelper implements Callable<Integer> {
-    @Option(names = {"-c"}, required = true, description = "Commands: plist list-backups list-recordings download-recordings")
+    @Option(names = {"-c"}, required = true, description = "Commands: plist list-backups list-backup-details list-recordings download-recordings")
     String command;
 
     @Option(names = {"-d"}, description = "Directory")
@@ -49,7 +49,13 @@ public class BackupHelper implements Callable<Integer> {
                 if (dir == null) {
                     dir = new File(System.getenv("APPDATA") + "\\Apple Computer\\MobileSync\\Backup");
                 }
-                ListBackups.doIt(dir);
+                ListBackups.listBackups(dir);
+            }
+            case "list-backup-details" -> {
+                if (dir == null) {
+                    dir = new File(System.getenv("APPDATA") + "\\Apple Computer\\MobileSync\\Backup");
+                }
+                ListBackups.listBackupDetails(dir);
             }
             case "list-recordings" -> {
                 if (backupId == null) {

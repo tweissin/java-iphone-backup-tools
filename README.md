@@ -25,9 +25,14 @@ Listing contents of a plist file
 %JAVA_HOME%\bin\java -jar target\backup-helper.jar -c plist -d "%APPDATA%\Apple Computer\MobileSync\Backup\BACKUP-ID" -f "Info.plist"
 ```
 
-Listing all backups
+Listing all backups (brief)
 ```
 %JAVA_HOME%\bin\java -jar target\backup-helper.jar -c list-backups
+```
+
+Listing all backups with details
+```
+%JAVA_HOME%\bin\java -jar target\backup-helper.jar -c list-backup-details
 ```
 
 List recordings
