@@ -21,6 +21,9 @@ public class BackupHelper implements Callable<Integer> {
     @Option(names = {"-f"}, description = "Filename")
     String filename;
 
+    @Option(names = {"-o"}, description = "Output directory")
+    File outputDir;
+
     public static void main(String[] args) {
         int exitCode = new CommandLine(new BackupHelper()).execute(args);
         System.exit(exitCode);
@@ -28,22 +31,39 @@ public class BackupHelper implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        switch(command) {
-            case "plist":
-                if (dir==null || filename==null) {
+        File file;
+        switch (command) {
+            case "plist" -> {
+                if (dir == null || filename == null) {
                     System.out.println("Both directory and filename are required");
                     return 1;
                 }
-                var file = new File(dir, filename);
+                file = new File(dir, filename);
                 var rootDict = (NSDictionary) PropertyListParser.parse(file);
                 DumpPlist.dump(rootDict);
-                break;
-            case "list-backups":
-                if (dir==null) {
+            }
+            case "list-backups" -> {
+                if (dir == null) {
                     dir = new File(System.getenv("APPDATA") + "\\Apple Computer\\MobileSync\\Backup");
                 }
                 ListBackups.doIt(dir);
-                break;
+            }
+            case "list-recordings" -> {
+                if (dir == null) {
+                    System.out.println("Directory is required");
+                    return 1;
+                }
+                file = new File(dir, "Manifest.db");
+                Recordings.listRecordings(file);
+            }
+            case "download-recordings" -> {
+                if (dir == null || outputDir == null) {
+                    System.out.println("Both input directory and output directory are required");
+                    return 1;
+                }
+                file = new File(dir, "Manifest.db");
+                Recordings.downloadRecordings(file, outputDir);
+            }
         }
         return 0;
     }
